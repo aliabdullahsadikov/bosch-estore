@@ -4,10 +4,16 @@ import pickle
 from fastapi import UploadFile, HTTPException
 from starlette import status
 
+from common import utils
 from common.database import get_db
 from common.database.redis import cache_up
 from services.product.models.product import Product
 
+product_status = {
+    "active": 1,
+    "inactive": 0,
+    "trash": -1
+}
 
 class ProductBaseController(object):
 
@@ -17,6 +23,32 @@ class ProductBaseController(object):
 
     def __init__(self):
         self.model = Product
+
+    def _get_products(self, product_ids: list = [], active: bool = None) -> Product:
+        """
+        The function responsible for receive products
+        :param product_ids: Receive category related
+        :param active:
+        :return: Product
+        """
+        with get_db() as db:
+            products = db.query(self.model)
+            if product_ids:
+                """ The case for obtain products by category """
+                products.filter(self.model.id in product_ids)
+
+            if active:
+                """ receive only active ones """
+                products.filter(self.model.status == product_status["active"])
+
+            products.all()
+
+            data = []
+            for row in products:
+                row.photos = row.photos
+                data.append(row)
+
+        return data
 
     def _create(self):
         """ Create Product """

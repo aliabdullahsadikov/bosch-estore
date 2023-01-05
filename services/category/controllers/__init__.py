@@ -57,6 +57,22 @@ class CategoryBaseController(object):
 
         return category
 
+    def _get_category_by_name(self):
+        """ Get category by ID """
+        with get_db() as db:
+            category = db.query(self.model).get(self.model.name == self.payload['name'])
+
+        return category
+
+    def _check_category_by_name(self) -> bool:
+        """ Get category by ID """
+        with get_db() as db:
+            category = db.query(self.model)\
+                .filter(self.model.name == self.payload['name'])\
+                .first()
+
+        return True if category else False
+
     @staticmethod
     @cache_up
     def get_all_categories():

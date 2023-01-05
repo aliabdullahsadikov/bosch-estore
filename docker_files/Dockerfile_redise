@@ -1,0 +1,8 @@
+FROM redis:latest
+
+WORKDIR /db_redis
+
+VOLUME redis_data:/var/www/db/redis/data
+
+# run
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8013"]

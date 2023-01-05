@@ -52,3 +52,20 @@ def reject_photo(path: str, mode: str, filename: str = "") -> bool:
         return False  # Photo has not exists!
 
     return True
+
+
+
+def fetch_rows(rows):
+    arr_data = []
+    for row in rows:
+        arr_data.append(row)
+
+    return arr_data
+
+def fetch_rows_product(rows):
+    arr_data = []
+    for row in rows:
+        row.photos = row.photos
+        arr_data.append(row)
+
+    return arr_data

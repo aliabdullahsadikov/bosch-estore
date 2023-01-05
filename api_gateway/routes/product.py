@@ -1,11 +1,12 @@
 from typing import List, Text
 
-from fastapi import APIRouter, Request, UploadFile, Form
+from fastapi import APIRouter, Request, UploadFile, Form, File
 from pydantic import Field
 
 from services.product.controllers.create import CreateProductController
 from services.product.controllers.get import GetProductController
-from services.product.controllers.get_all_by_category import GetAllByCategoryController
+from services.product.controllers.get_all_by_category import GetAllController
+from services.product.models.product import Product
 from services.product.schemas.product_in import ProductInSchema
 
 product_routes = APIRouter()
@@ -16,9 +17,9 @@ def get_by_id(product_id: int):
     return GetProductController(product_id).execute()
 
 
-@product_routes.get("/products/{category_id}")
-def get_all_by_category_id(category_id: int):
-    return GetAllByCategoryController(category_id).execute()
+@product_routes.get("/products")
+def get_all(category_id: int = None):
+    return GetAllController(category_id).execute()
 
 
 @product_routes.post("/products")
@@ -41,7 +42,7 @@ def create(
         status: int = None,
         amount: int = None,
         tags: Text = None,
-        photos: List[UploadFile] = None,
+        photos: List[UploadFile] = File(description="Attach only files that file size is lower than 1MB!"),
 ):
     payload = ProductInSchema(
         name=name.capitalize(),

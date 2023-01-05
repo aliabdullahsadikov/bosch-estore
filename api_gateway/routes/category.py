@@ -1,6 +1,7 @@
 from typing import Union, List
 
 from fastapi import APIRouter, Request, UploadFile, Form, File
+from starlette import status
 
 from common.database.redis import cache_up
 from services.category.controllers.create import CreateCategoryController
@@ -14,7 +15,7 @@ from services.category.schemas.category_out import CategoryOutSchema
 category_routes = APIRouter()
 
 
-@category_routes.post("/categories")
+@category_routes.post("/categories", status_code=status.HTTP_201_CREATED)
 def create_category(
         name: str = Form(),
         parent_id: int = Form(),

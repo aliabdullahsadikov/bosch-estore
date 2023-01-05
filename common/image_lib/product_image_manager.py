@@ -3,7 +3,9 @@ import copy
 from abc import abstractmethod
 from PIL import Image
 
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
+from starlette import status
+
 from common.image_lib.image_manager import ImgManagerAbc
 from common.config import DEVELOPMENT_CONFIGS
 

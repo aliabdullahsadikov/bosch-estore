@@ -15,6 +15,13 @@ class CreateCategoryController(CategoryBaseController):
     def execute(self):
         photo_sm = None
         photo_md = None
+
+        if self._check_category_by_name():
+            raise HTTPException(
+                status_code=status.HTTP_208_ALREADY_REPORTED,
+                detail="Category already created with the following name!"
+            )
+
         try:
             slug = self._generate_slug(self.payload["name"])
             self.payload["slug"] = slug
@@ -43,7 +50,7 @@ class CreateCategoryController(CategoryBaseController):
             #  logging
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Category is not created: {ex.orig}",
+                detail=f"Category is not created: {ex}",
             )
 
         return new

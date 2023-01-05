@@ -1,9 +1,12 @@
+import array
 import datetime
 import pickle
 from typing import List
 
 from fastapi import HTTPException, UploadFile, File
+from sqlalchemy import text
 from starlette import status
+from sqlalchemy.dialects.postgresql import array_agg
 
 from common import utils
 from common.database import get_db
@@ -12,24 +15,24 @@ from services.category.models.category import Category, Category_Product
 from services.product.controllers import ProductBaseController
 
 
-class GetAllByCategoryController(ProductBaseController):
-    def __init__(self, category_id: int):
+class GetAllController(ProductBaseController):
+    def __init__(self, category_id: int = None):
         self.category_id = category_id
-        super(GetAllByCategoryController, self).__init__()
+        super(GetAllController, self).__init__()
 
     def execute(self):
         try:
-            category = self._get_category(self.category_id)
-            if not category:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Category not found: by this ID {self.category_id}"
-                )
+            product_ids = []
+            if self.category_id:
+                category = self._get_category(self.category_id)
+                if not category:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail=f"Category not found: by this ID {self.category_id}"
+                    )
+                product_ids = self._get_product_ids(self.category_id)
 
-            product_ids = self._get_product_ids(self.category_id)
-
-            # product = self._get_product_by_id()
-            # product = self._decod_text_fields(product)
+            products = self._get_products(product_ids, active=True)
 
         except Exception as ex:
             #  logging
@@ -38,7 +41,7 @@ class GetAllByCategoryController(ProductBaseController):
                 detail=f"Error occurred while retrieve product: {ex}",
             )
 
-        return None
+        return products
 
     def _get_category(self, category_id):
         with get_db() as db:
@@ -47,10 +50,19 @@ class GetAllByCategoryController(ProductBaseController):
 
         return model
 
-    def _get_product_ids(self, category_id):
+    def _get_product_ids(self, category_id) -> list:
+        """
+        Product ids which related to category
+        :param category_id:
+        :return: list data
+        """
         with get_db() as db:
-            product_ids = db.query(Category_Product.product_id)\
-                .filter(Category_Product.category_id == category_id)\
-                .all()
+            command = text(f"""
+                SELECT product_id
+                FROM category_product as cp
+                WHERE cp.category_id = {category_id}
+            """)
+            sql_row = db.execute(command)
+        data = [row.product_id for row in sql_row]
 
-        return product_ids
+        return data

@@ -8,9 +8,10 @@ def config(env: str = None):
     return DEVELOPMENT_CONFIGS
 
 
-
 DEVELOPMENT_CONFIGS = {
     "DATABASE_URL_POSTGRES": "postgresql://ali:131313ali@localhost:5432/shop-bosch-2",
+    "DATABASE_URL_POSTGRES_FOR_TESTING": "postgresql://ali:131313ali@localhost:5432/shop-bosch-test_db",
+
     "image_conf": {
         "default_path": "common/static/photo",
         "image_type": {
