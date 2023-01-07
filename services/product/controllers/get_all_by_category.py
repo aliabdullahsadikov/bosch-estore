@@ -16,8 +16,10 @@ from services.product.controllers import ProductBaseController
 
 
 class GetAllController(ProductBaseController):
-    def __init__(self, category_id: int = None):
+    def __init__(self, category_id: int = None, limit: int = 30, page: int = None):
         self.category_id = category_id
+        self.limit = limit,
+        self.page = page
         super(GetAllController, self).__init__()
 
     def execute(self):
@@ -35,7 +37,7 @@ class GetAllController(ProductBaseController):
             products = self._get_products(product_ids, active=True)
 
         except Exception as ex:
-            #  logging
+            # should be logging performance line
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error occurred while retrieve product: {ex}",

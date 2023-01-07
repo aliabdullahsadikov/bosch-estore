@@ -1,9 +1,8 @@
 import os
 import sys
-from logging.config import fileConfig
+from logs.log_base import fileConfig
 
-from sqlalchemy import engine_from_config, create_engine
-from sqlalchemy import pool
+from sqlalchemy import create_engine
 
 from alembic import context
 
@@ -23,7 +22,6 @@ if config.config_file_name is not None:
 
 base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(base_dir)
-from common.models import *  # This helps alembic autogeneration
 from common.database import Base
 from common.config import config as app_config
 target_metadata = Base.metadata

@@ -1,12 +1,7 @@
-import datetime
-import pickle
+from logs.log_base import logging, f_handler
 
-from fastapi import UploadFile, HTTPException
-from starlette import status
-
-from common import utils
 from common.database import get_db
-from common.database.redis import cache_up
+from services import BaseController
 from services.product.models.product import Product
 
 product_status = {
@@ -15,13 +10,15 @@ product_status = {
     "trash": -1
 }
 
-class ProductBaseController(object):
+
+class ProductBaseController(BaseController):
 
     payload = {}
     id = None
     photo_path = "common/static/photo"
 
     def __init__(self):
+        super(ProductBaseController, self).__init__()
         self.model = Product
 
     def _get_products(self, product_ids: list = [], active: bool = None) -> Product:
@@ -32,23 +29,47 @@ class ProductBaseController(object):
         :return: Product
         """
         with get_db() as db:
+
             products = db.query(self.model)
+            # products = db.query(self.model)\
+            #     .filter(self.model.id.in_(product_ids))\
+            #     .filter(self.model.status == product_status["active"]) \
+            #     .limit(2)\
+            #     .offset(1)\
+            #     .all()
+
             if product_ids:
                 """ The case for obtain products by category """
-                products.filter(self.model.id in product_ids)
+                products = products.filter(self.model.id.in_(product_ids))
 
             if active:
                 """ receive only active ones """
-                products.filter(self.model.status == product_status["active"])
+                products = products.filter(self.model.status == product_status["active"])
 
-            products.all()
+            count = products.count() / self.limit[0]
+
+            if self.page:
+                """ pagination page """
+                offset = (self.page - 1) * self.limit[0]
+                products = products.offset(offset)
+
+            products = products.limit(self.limit[0])
+
+            products = products.all()
 
             data = []
             for row in products:
                 row.photos = row.photos
                 data.append(row)
 
-        return data
+            response = {
+                "data": data,
+                "pages": count,
+                "limit": self.limit[0],
+                "page": self.page
+            }
+
+        return response
 
     def _create(self):
         """ Create Product """
@@ -60,22 +81,16 @@ class ProductBaseController(object):
 
         return new
 
-    # def _update(self):
-    #     """ Update Category """
-    #     with get_db() as db:
-    #         target_model = db.query(self.model).get(self.id)
-    #         target_model.name = self.payload["name"]
-    #         target_model.parent_id = self.payload["parent_id"]
-    #         target_model.slug = self.payload["slug"]
-    #         target_model.active = self.payload["active"]
-    #         target_model.photo_sm = self.payload["photo_sm"]
-    #         target_model.photo_md = self.payload["photo_md"]
-    #         target_model.updated_at = datetime.datetime.now()
-    #         db.commit()
-    #         db.refresh(target_model)
-    #
-    #     return target_model
-    #
+    def _update(self):
+        """ Update Product """
+        with get_db() as db:
+            target_model = db.query(self.model)\
+                .filter(self.model.id == self.id)\
+                .update(self.payload)
+            db.commit()
+
+        return target_model
+
     # @staticmethod
     # def _generate_slug(name: str) -> str:
     #     """ Generate slug """
@@ -100,7 +115,6 @@ class ProductBaseController(object):
         :param product:
         :return:
         """
-        import base64
 
         # product.description_uz = base64.b64encode(product.description_uz)
         # product.description_ru = pickle.loads(product.description_ru)

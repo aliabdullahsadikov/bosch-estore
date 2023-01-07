@@ -46,13 +46,17 @@ def get_full_file_path(path, mode):
 
 
 def reject_photo(path: str, mode: str, filename: str = "") -> bool:
+    split_filename = filename.split("/")
     if os.path.exists(path+mode+filename):
         os.remove(path+mode+filename)
+
+    elif split_filename[1] in mode:
+        os.remove(path + filename)
+
     else:
         return False  # Photo has not exists!
 
     return True
-
 
 
 def fetch_rows(rows):
@@ -62,6 +66,7 @@ def fetch_rows(rows):
 
     return arr_data
 
+
 def fetch_rows_product(rows):
     arr_data = []
     for row in rows:
@@ -69,3 +74,16 @@ def fetch_rows_product(rows):
         arr_data.append(row)
 
     return arr_data
+
+
+def get_root_dir():
+    import __main__ as main
+    if main:
+        if hasattr(main, '__file__'):
+            script_name = os.path.abspath(os.path.join(os.getcwd(), main.__file__))
+            script_dir = os.path.dirname(script_name)
+        else:
+            script_dir = os.getcwd()
+    else:
+        script_dir = os.getcwd()
+    return script_dir
