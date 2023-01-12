@@ -37,18 +37,24 @@ import logging
 # logger = logging.getLogger(__name__)
 
 # Create handlers
-c_handler = logging.StreamHandler()
-c_handler.setLevel(logging.WARNING)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.WARNING)
 
-f_handler = logging.FileHandler('logs/log_files/error.log')
-f_handler.setLevel(logging.ERROR)
+# file error handler
+file_error_handler = logging.FileHandler('logs/log_files/error.log')
+file_error_handler.setLevel(logging.ERROR)
+
+# file info handler
+file_info_handler = logging.FileHandler('logs/log_files/info.log')
+file_info_handler.setLevel(logging.INFO)
 
 # Create formatters and add it to handlers
 c_format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-c_handler.setFormatter(c_format)
+console_handler.setFormatter(c_format)
 
 f_format = logging.Formatter("%(levelname)s <PID %(process)d:%(processName)s> %(name)s.%(funcName)s(): %(message)s")
-f_handler.setFormatter(f_format)
+file_error_handler.setFormatter(f_format)
+file_info_handler.setFormatter(f_format)
 
 # Add handlers to the logger
 # logger.addHandler(c_handler)

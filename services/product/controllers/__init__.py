@@ -1,8 +1,11 @@
-from logs.log_base import logging, f_handler
+from typing import List
+
+from logs.log_base import logging
 
 from common.database import get_db
 from services import BaseController
 from services.product.models.product import Product
+from services.product.models.product_photos import ProductPhoto
 
 product_status = {
     "active": 1,
@@ -90,6 +93,12 @@ class ProductBaseController(BaseController):
             db.commit()
 
         return target_model
+
+    def _delete_photos(self, photo: ProductPhoto):
+        with get_db() as db:
+            db.delete(photo)
+            db.commit()
+
 
     # @staticmethod
     # def _generate_slug(name: str) -> str:

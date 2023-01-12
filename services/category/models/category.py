@@ -13,8 +13,8 @@ class Category_Product(Base):
     __tablename__ = "category_product"
 
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(ForeignKey('categories.id', onupdate="CASCADE", ondelete="CASCADE"))
-    product_id = Column(ForeignKey('products.id', onupdate="CASCADE", ondelete="CASCADE"))
+    category_id = Column(ForeignKey('categories.id', onupdate="CASCADE"))
+    product_id = Column(ForeignKey('products.id', onupdate="CASCADE"))
 
 
 

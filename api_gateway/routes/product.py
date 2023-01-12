@@ -1,4 +1,4 @@
-from typing import List, Text
+from typing import List, Text, Union
 
 from fastapi import APIRouter, Request, UploadFile, Form, File
 from pydantic import Field
@@ -44,13 +44,13 @@ def update(
         status: int = None,
         amount: int = None,
         tags: Text = None,
-        photos: List[UploadFile] = File(description="Attach only files that file size is lower than 1MB!"),
+        photos: List[UploadFile] = File(None, description="Attach only files that file size is lower than 1MB!")
     ):
     payload = ProductInSchema(
         name=name.capitalize(),
-        long_name=long_name.capitalize(),
+        long_name=long_name.capitalize()  if manufacturer else None,
         model=model.upper(),
-        manufacturer=manufacturer.capitalize(),
+        manufacturer=manufacturer.capitalize() if manufacturer else None,
         description_uz=description_uz,
         description_ru=description_ru,
         description_en=description_en,
