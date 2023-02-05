@@ -1,23 +1,23 @@
 import sqlalchemy
 import datetime
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Column, Integer, Float, Boolean, DateTime
 
 from common.database import Base
-#
-# order_items = sqlalchemy.Table(
-#     "order_items",
-#     metadata,
-#     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-#     sqlalchemy.Column("order_id", ForeignKey("orders.id")),
-#     sqlalchemy.Column("product_id", ForeignKey("products.id")),
-#     sqlalchemy.Column("amount", sqlalchemy.Integer),
-#     sqlalchemy.Column("price", sqlalchemy.Float),
-#     sqlalchemy.Column("sale_percent", sqlalchemy.Integer, default=0),
-#     sqlalchemy.Column("sale_price", sqlalchemy.Float, default=0.0),
-#     sqlalchemy.Column("status", sqlalchemy.Boolean, default=True),
-#     sqlalchemy.Column("created_at", sqlalchemy.DateTime, default=datetime.datetime.now()),
-#     sqlalchemy.Column("updated_at", sqlalchemy.DateTime)
-#
-# )
+
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id = Column(Integer, primary_key=True)
+    order_id = Column(ForeignKey("orders.id"))
+    product_id = Column(ForeignKey("products.id"))
+    amount = Column(Integer)
+    price = Column(Float)
+    sale = Column(Integer, nullable=True)
+    sale_percent = Column(Integer, default=0)
+    sale_price = Column(Float, default=0.0)
+    status = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.datetime.now())
+    updated_at = Column(DateTime)
 

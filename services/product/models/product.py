@@ -5,6 +5,13 @@ from sqlalchemy import ForeignKey, Column, String, Boolean, Integer, Float, Text
 from sqlalchemy.orm import relationship
 
 from common.database import Base
+from services.category.models.category import get_db
+
+STATUS = {
+    "active": 1,
+    "inactive": 2,
+    "trash": -1
+}
 
 
 class Product(Base):
@@ -34,3 +41,31 @@ class Product(Base):
 
     categories = relationship("Category", secondary="category_product", back_populates="products", cascade="all,delete")
     photos = relationship("ProductPhoto", back_populates="product", cascade="all,delete")
+
+    def get_active(self, id):
+        with get_db() as db:
+            product = db.query(Product)\
+                .filter(
+                    Product.id == id,
+                    Product.status == STATUS["active"],
+                    Product.amount > 0
+                )\
+                .first()
+
+        return product
+
+    def get_price(self):
+        return self.price
+
+    def get_amount(self):
+        return self.amount
+
+    def check_amount(self, amount):
+        return True if self.amount >= amount else False
+
+    def active_sale(self):
+        return None  # not implemented
+
+    def get_sale_price(self):
+        return False  # not implemented
+

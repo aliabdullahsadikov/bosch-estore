@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 # from sqlalchemy.orm import session
 from api_gateway.routes.cart import cart_routes
 from api_gateway.routes.category import category_routes
+from api_gateway.routes.order import order_routes
 from api_gateway.routes.product import product_routes
 from api_gateway.routes.user import user_routes
 from common.config import config
@@ -43,6 +44,10 @@ app.include_router(category_routes, prefix="/api/v1", tags=["Category Routes"])
 
 """  Including Cart Routes  """
 app.include_router(cart_routes, prefix="/api/v1", tags=["Cart Routes"])
+
+
+"""  Including Cart Routes  """
+app.include_router(order_routes, prefix="/api/v1", tags=["Order Routes"])
 
 
 """ LOGGING """

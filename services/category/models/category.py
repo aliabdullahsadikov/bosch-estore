@@ -17,7 +17,6 @@ class Category_Product(Base):
     product_id = Column(ForeignKey('products.id', onupdate="CASCADE"))
 
 
-
 class Category(Base):
     __tablename__ = "categories"
 

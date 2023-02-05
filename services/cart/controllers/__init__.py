@@ -4,9 +4,9 @@ from uuid import UUID
 import bson
 from starlette import status
 
-from common.database import get_db
 from services import BaseController
 from services.cart.models.cart import Cart
+from services.category.models.category import get_db
 from services.product.models.product import Product
 from services.user.auth import current_user
 

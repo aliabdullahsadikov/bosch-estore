@@ -1,22 +1,20 @@
 import sqlalchemy
 import datetime
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Column, Integer, String, JSON, DateTime
 
 from common.database import Base
-#
-# transactions = sqlalchemy.Table(
-#     "transactions",
-#     metadata,
-#     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-#     sqlalchemy.Column("user_id", ForeignKey("users.id"), index=True),
-#     sqlalchemy.Column("transaction_id", sqlalchemy.String, default=None),
-#     sqlalchemy.Column("order_id", ForeignKey("orders.id"), index=True),
-#     sqlalchemy.Column("status", sqlalchemy.Integer, default=0),
-#     sqlalchemy.Column("payment_code", sqlalchemy.String, default=None),
-#     sqlalchemy.Column("order_data", sqlalchemy.JSON, default={}),
-#     sqlalchemy.Column("created_at", sqlalchemy.DateTime, default=datetime.datetime.now()),
-#     sqlalchemy.Column("updated_at", sqlalchemy.DateTime)
-#
-# )
-#
+
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(ForeignKey("users.id"), index=True)
+    transaction = Column(String, default=None)
+    order_id = Column(ForeignKey("orders.id"), index=True)
+    status = Column(Integer, default=0)
+    payment_code = Column(String, default=None)
+    order_data = Column(JSON, default={})
+    created_at = Column(DateTime, default=datetime.datetime.now())
+    updated_at = Column(DateTime, onupdate=datetime.datetime.now())

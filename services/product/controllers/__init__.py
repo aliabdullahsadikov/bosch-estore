@@ -99,14 +99,13 @@ class ProductBaseController(BaseController):
             db.delete(photo)
             db.commit()
 
-
     # @staticmethod
     # def _generate_slug(name: str) -> str:
     #     """ Generate slug """
     #     name = name.strip()
     #     name = name.lower()
     #     return name.replace(" ", "_")
-    #
+
     def _get_product_by_id(self):
         """ Get product by ID """
         with get_db() as db:

@@ -1,7 +1,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from uuid import UUID
 
-from common.database import get_db
+from services.category.models.category import get_db
 from services.user.models.user import User
 from services.user.schemas.sign_up import SignUpSchema
 
