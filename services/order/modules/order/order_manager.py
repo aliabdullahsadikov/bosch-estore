@@ -55,6 +55,22 @@ class OrderManager(object):
     def get_order_status(self):
         return self.object.status
 
+    def update(self, **kwargs):
+        with get_db() as db:
+            order = db.query(self._model).filter(self._model.id == self._order_obj.id).values(**kwargs)
+
+            # shipping_type: Any
+            # shipping_comment: Text = None
+            #
+            # fio: str = None
+            # phone: str = None
+            # address: str = None
+            # company: str = None
+            # email: str = None
+            # description: Text = None
+            db.commit()
+        return order
+
     def create(self, cart: CartDataSchema, user_id: int, payload: dict):
         """
         Method will receive cart as a mongo object
@@ -114,5 +130,5 @@ class OrderManager(object):
             order.status = ORDER_STATUS["unprocessed"]
             db.commit()
 
-    #  shujoyini qilish kere
+
 

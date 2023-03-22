@@ -5,17 +5,21 @@ from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer
 # from sqlalchemy.orm import session
+
 from api_gateway.routes.cart import cart_routes
 from api_gateway.routes.category import category_routes
 from api_gateway.routes.order import order_routes
+from api_gateway.routes.payme import payme_routes
 from api_gateway.routes.product import product_routes
 from api_gateway.routes.user import user_routes
 from common.config import config
 from common.database import SessionLocal
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 """ Application """
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=os.path.abspath("common/static")), name="static")
+# app.add_middleware(TrustedHostMiddleware, allowed_hosts=config["ALLOWED_HOSTS"])
 
 
 @app.on_event("startup")
@@ -49,6 +53,9 @@ app.include_router(cart_routes, prefix="/api/v1", tags=["Cart Routes"])
 """  Including Cart Routes  """
 app.include_router(order_routes, prefix="/api/v1", tags=["Order Routes"])
 
+
+"""  Including Payme Routes  """
+app.include_router(payme_routes, prefix="/api/v1", tags=["Payme Routes"])
 
 """ LOGGING """
 
