@@ -27,7 +27,7 @@ class GetAllCategoriesController(CategoryBaseController):
             # logging point
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error occurred in getting all categories: {ex}"
+                detail=f"Error occurred in getting all categories: {ex}"
             )
 
         return categories

@@ -6,7 +6,8 @@ from starlette import status
 
 from common import utils
 from common.config import DEVELOPMENT_CONFIGS
-from common.database import get_db, Base
+from common.get_db import get_db
+from common.database import Base
 from common.image_lib.product_image_manager import ProductImgManager, PHOTO_SIZE
 from common.utils import PHOTO_TYPE
 from services.category.models.category import Category_Product

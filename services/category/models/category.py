@@ -6,7 +6,8 @@ import datetime
 from sqlalchemy import ForeignKey, Column, Integer, String, Boolean, Table
 from sqlalchemy.orm import relationship, backref
 
-from common.database import Base, SessionLocal
+from common.database import Base
+from common.get_db import get_db
 
 
 class Category_Product(Base):
@@ -43,11 +44,3 @@ class Category(Base):
             child()
         self.children = child_categories
 
-
-@contextmanager
-def get_db():
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()

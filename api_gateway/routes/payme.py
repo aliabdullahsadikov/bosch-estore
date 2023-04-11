@@ -5,7 +5,14 @@ from fastapi import APIRouter, Request, Response, HTTPException, Depends
 from starlette import status
 from starlette.responses import JSONResponse
 
+from services.order.models.transaction import Transaction
+from services.payment.payme.methods.check_perform_transaction import CheckPerformTransaction
+from services.payment.payme.methods.create_transaction import CreateTransaction
+from services.payment.payme.schemas.check_perform_transaction import CheckPerformTransactionParamsSchema
 from services.payment.payme.utils.authorize import authorize
+from services.payment.payme.utils.errors import errors
+
+from services.payment.payme.methods.check_transaction import CheckTransaction
 
 payme_routes = APIRouter()
 
@@ -26,14 +33,33 @@ payme_routes = APIRouter()
 async def compute_payme_operations(request: Request):
 
     #  check auth
-    check_auth = authorize(request)
-    if check_auth:
-        return check_auth
+    """
+    auth_error = authorize(request)
+    if auth_error:
+        return auth_error
+    """
 
-    #
+    #  dispatch method
     request_body = await request.json()
-    # response = await serve(request_body)
-    # return request_body
+    response = await call_method(request_body, request_body["method"], request_body["params"])
+    return response
+
+
+async def call_method(request, method, params: dict) -> dict:
+    if method == "CheckPerformTransaction":
+        response = await CheckPerformTransaction(request, CheckPerformTransactionParamsSchema(**params)).call()
+    elif method == "CreateTransaction":
+        response = await CreateTransaction(params).call()
+    elif method == "CheckTransaction":
+        response = await CheckTransaction(params).call()
+    else:
+        response = "Undefined method"
+    return response
+
+
+
+
+
 
 #
 # class Composer:

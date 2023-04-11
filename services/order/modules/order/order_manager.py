@@ -1,7 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 
-from common.database import get_db
+from common.get_db import get_db
 from logs.log_base import file_error_handler
 from services.order.models.order import Order, ORDER_STATUS
 from services.order.models.order_item import OrderItem
@@ -57,17 +57,17 @@ class OrderManager(object):
 
     def update(self, **kwargs):
         with get_db() as db:
-            order = db.query(self._model).filter(self._model.id == self._order_obj.id).values(**kwargs)
+            order = db.query(self._model).filter_by(id=self._order_obj.id).first()
 
-            # shipping_type: Any
-            # shipping_comment: Text = None
-            #
-            # fio: str = None
-            # phone: str = None
-            # address: str = None
-            # company: str = None
-            # email: str = None
-            # description: Text = None
+            order.shipping_type = kwargs.get("shipping_type")
+            order.shipping_comment = kwargs.get("shipping_comment")
+
+            order.fio = kwargs.get("fio")
+            order.phone = kwargs.get("phone")
+            order.address = kwargs.get("address")
+            order.company = kwargs.get("company")
+            order.email = kwargs.get("email")
+            order.description = kwargs.get("description")
             db.commit()
         return order
 

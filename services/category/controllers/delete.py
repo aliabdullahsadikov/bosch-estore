@@ -2,7 +2,7 @@ from fastapi import HTTPException, UploadFile
 from starlette import status
 
 from common import utils
-from common.database import get_db
+from common.get_db import get_db
 from services.category.controllers import CategoryBaseController
 from services.category.schemas.category_in import CategoryInSchema
 from services.category.schemas.category_out import CategoryOutSchema

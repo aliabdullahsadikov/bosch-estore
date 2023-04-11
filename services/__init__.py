@@ -4,9 +4,10 @@ from pydantic import BaseModel
 from starlette import status
 
 from clients.mongo_client import MongoCoreClient
-from common.database import get_db
 from common.database.mongo import myclient, mdb
+from common.get_db import get_db
 from logs.log_base import logging, file_error_handler, file_info_handler, console_handler
+from services.user.auth import current_user
 from services.user.models.user import User
 
 
@@ -42,9 +43,9 @@ class ResponseSchema(BaseModel):
     data: dict = {}
 
 
-def current_user():
-    with get_db() as db:
-        user = db.query(User)\
-            .filter(User.id == UUID('0b8d6c3d-ed05-4cfc-896a-f599289d86a6'))\
-            .first()
-        return user
+# def current_user():
+#     with get_db() as db:
+#         user = db.query(User)\
+#             .filter(User.id == UUID('0b8d6c3d-ed05-4cfc-896a-f599289d86a6'))\
+#             .first()
+#         return user

@@ -3,7 +3,7 @@ import os
 from services.payment.payme.config import PAYME_SETTINGS
 
 
-def config(env: str = None):
+def _config(env: str = None):
     if env == "prod":
         return PRODACTION_CONFIGS
 
@@ -63,7 +63,7 @@ PRODACTION_CONFIGS = {
     "ALLOWED_HOSTS": collect_allowed_hosts()
 }
 
-config = config(os.getenv("ENV", "dev"))
+config = _config(os.getenv("ENV", "dev"))
 
 USER_STATUS = {
     "new": 0,

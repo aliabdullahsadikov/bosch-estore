@@ -22,3 +22,5 @@ PAYME_SETTINGS = {
     ]
 
 }
+
+PAYMENT_CODE_PAYME = 'payme'

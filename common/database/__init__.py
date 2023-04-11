@@ -1,9 +1,10 @@
-from contextlib import contextmanager
 
 import databases
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 from common.config import config
 
@@ -14,7 +15,6 @@ engine = sqlalchemy.create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
 
 
 """
@@ -27,13 +27,8 @@ from common import models
 # Create the tables in the database
 Base.metadata.create_all(engine)
 
-@contextmanager
-def get_db():
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
+
+
 
 
 

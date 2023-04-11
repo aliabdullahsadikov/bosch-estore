@@ -9,7 +9,7 @@ from starlette import status
 from sqlalchemy.dialects.postgresql import array_agg
 
 from common import utils
-from common.database import get_db
+from common.get_db import get_db
 from common.utils import PHOTO_TYPE
 from services.category.models.category import Category, Category_Product
 from services.product.controllers import ProductBaseController

@@ -8,7 +8,7 @@ from starlette import status
 
 # from common.database import database
 from common.config import USER_STATUS
-from common.database import get_db
+from common.get_db import get_db
 from services.user.models.user import User
 from services.user.schemas import ResponseSchema
 from services.user.schemas.create import CreateSchema
@@ -53,14 +53,31 @@ class BaseController(object):
 
     def _user_update(self) -> User:
         """ Update user """
-        updated = datetime.now()
-        password = 'hfdkfdjslkfjwovjdkvjlksj'
+        user = None
         with get_db() as db:
-            # user = db.query(self.model).update(**self.request_body) \
-            #     .filter(self.model.id == self.id)
-            user = self.model(password_hash=password, updated_at=password, **self.request_body)
-            db.add(user)
-            db.commit()
+            try:
+                _user = db.query(self.model).filter_by(id=self.id).first()
+                if _user:
+                    _user.firstname = self.request_body.get("firstname") if self.request_body.get("firstname") else _user.firstname
+                    _user.lastname = self.request_body.get("lastname") if self.request_body.get("lastname") else _user.lastname
+                    _user.phone = self.request_body.get("phone") if self.request_body.get("phone") else _user.phone
+                    _user.email = self.request_body.get("email") if self.request_body.get("email") else _user.email
+                    _user.updated_at = datetime.now()
+                    db.commit()
+                else:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="User not found!"
+                    )
+            except Exception as ex:
+                db.rollback()
+                raise HTTPException(status_code=500, detail=str(ex))
+            finally:
+                db.refresh(_user)
+                user = _user
+            # user = self.model(updated_at=updated, **self.request_body)
+            # db.add(user)
+            # db.commit()
         return user
 
     def get_user_by_id(self) -> User:

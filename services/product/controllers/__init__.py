@@ -2,7 +2,7 @@ from typing import List
 
 from logs.log_base import logging
 
-from common.database import get_db
+from common.get_db import get_db
 from services import BaseController
 from services.product.models.product import Product
 from services.product.models.product_photos import ProductPhoto

@@ -1,5 +1,5 @@
 from clients.mongo_client import MongoCoreClient
-from common.database import get_db
+from common.get_db import get_db
 from common.database.mongo import myclient, mdb
 from services import BaseController
 from services.cart.models.cart import Cart
@@ -18,7 +18,6 @@ class OrderBaseController(BaseController):
             mongo_db=mdb,
             document=None
         )
-
 
     def active_sale(self):
         return None

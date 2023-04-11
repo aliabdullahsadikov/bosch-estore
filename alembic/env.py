@@ -3,11 +3,13 @@ import sys
 # from logs.log_base import fileConfig as conf
 
 from sqlalchemy import create_engine
-
 from alembic import context
+
+from common.database import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+
 config = context.config
 
 # Interpret the config file for Python logging.
@@ -22,14 +24,14 @@ config = context.config
 
 base_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(base_dir)
-from common.database import Base
-from common.config import config as app_config
-target_metadata = Base.metadata
+from sqlalchemy.ext.declarative import declarative_base
+# from common.config import config as app_config
 
 
 def get_url():
     # return os.getenv("SQLALCHEMY_DATABASE_URL", "postgresql://postgres:ackCgCMDmE@equick-db/user_service_db")
-    return app_config["DATABASE_URL_POSTGRES"]
+    # return app_config["DATABASE_URL_POSTGRES"]
+    return "postgresql://ali:131313ali@localhost:5432/shop-bosch-2"
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -52,7 +54,7 @@ def run_migrations_offline() -> None:
     url = get_url()
     context.configure(
         url=url,
-        target_metadata=target_metadata,
+        target_metadata=Base.metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
@@ -72,11 +74,12 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=Base.metadata
         )
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

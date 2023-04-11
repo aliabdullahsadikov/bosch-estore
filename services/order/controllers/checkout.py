@@ -5,7 +5,7 @@ from bson import ObjectId
 from fastapi import HTTPException
 from starlette import status
 
-from common.database import get_db
+from common.get_db import get_db
 from services.cart.controllers import UserCartManager
 from services.order.controllers import OrderBaseController
 from services.order.models.order import Order, ORDER_STATUS
@@ -96,8 +96,6 @@ class CheckoutOrderController(OrderBaseController):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error occurred while changing cart status"
             )
-
-
 
         return self.response(
             message="The order saved successfully",

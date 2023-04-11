@@ -3,7 +3,7 @@ import datetime
 from fastapi import UploadFile, HTTPException
 from starlette import status
 
-from common.database import get_db
+from common.get_db import get_db
 from common.database.redis import cache_up
 from services.category.models.category import Category
 

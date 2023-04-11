@@ -1,4 +1,4 @@
-from common.database import get_db
+from common.get_db import get_db
 from services.product.models.product import Product
 
 
